@@ -11,7 +11,7 @@
 4. 讲讲JS中EventLoop？微任务？宏任务？setTimeout和setInterval是微任务还是宏任务？promise呢？
 
 5. 看输出
-	 ```
+   ```
    async function async1() {
      console.log('async1 start');
      await async2();
@@ -50,6 +50,8 @@
    -  宏任务包括： script 脚本的执行、setTimeout ，setInterval ，setImmediate 一类的定时事件，还有如 I/O 操作、UI 渲染等
 
 8. JS是单线程语言，在处理异步事件时有其独特的机制，说一下这个机制。Event Loop
+
+9. 讲了讲有哪些宏任务和微任务，以及它们的循环方式，之后思考对于宏任务和微任务队列的实现方式（给了几个思路，1. 二维数组 2. 哈希散列 3. 数组[链表](https://www.nowcoder.com/jump/super-jump/word?word=链表)）
 
 
 
@@ -103,7 +105,40 @@ js是单线程语言，一次只能执行一个任务，为了协调事件，用
 
 总结以下：
 
-js是一门单线程语言，一次只能处理一个任务，因此需要事件循环来协调任务的处理。任务可以分为同步任务和异步任务，同步任务会在js执行栈中按顺序执行，异步任务会在异步任务返回后，将回调函数放入任务队列等待js主线程空闲时按顺序执行，异步任务又可分为宏任务和微任务，宏任务在标准里指的是task，它指的是在任务队列中等待主线程执行的任务。微任务在微任务队列中排队，每执行完一个宏任务或者一个回调就会执行微任务队列中的任务，并将其全部执行完再进入下一个任务的执行或渲染。在任务执行的中间可能会发生页面的渲染。
+js是一门单线程语言，一次只能处理一个任务，因此需要事件循环来协调任务的处理。任务可以分为同步任务和异步任务，同步任务会在js执行栈中按顺序执行，异步任务会在异步任务返回后，将回调函数放入任务队列等待js主线程空闲时按顺序执行。宏任务在标准里指的是task。微任务在微任务队列中排队，每执行完一个宏任务或者一个回调就会执行微任务队列中的任务，并将其全部执行完再进入下一个任务的执行或渲染。在任务执行的中间可能会发生页面的渲染。
+
+
+
+
+
+## 练一练
+
+### process.nextTick()用法
+
+```javascript
+function fn(name){
+   return f;
+
+   function f(){
+       var n = name;
+       console.log("Next TICK "+n+", ");        
+   }
+}
+
+function myTimeout(time,msg){
+   setTimeout(function(){
+       console.log("TIMEOUT "+msg);
+   },time); 
+}
+
+process.nextTick(fn("ONE"));
+myTimeout(500,"AFTER-ONE");
+process.nextTick(fn("TWO"));
+myTimeout(500,"AFTER-TWO");
+process.nextTick(fn("THREE"));
+myTimeout(500,"AFTER-THREE");
+process.nextTick(fn("FOUR"));
+```
 
 
 
