@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="display">0</div>
+  <button id="add">add</button>
+  <script src="./index.js"></script>
+  <script>
+    var btn = document.querySelector('#add')
+    var display = document.querySelector('.display')
+
+    var fn = function () {
+      var num = display.innerHTML
+      num++
+      display.innerHTML = num
+    }
+    btn.addEventListener('click', throttle(fn, 1000))
+  </script>
+</body>
+
+</html>

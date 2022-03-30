@@ -1,0 +1,23 @@
+{
+  "name": "one-stone-a-day",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adjfks/one-stone-a-day.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adjfks/one-stone-a-day/issues"
+  },
+  "homepage": "https://github.com/adjfks/one-stone-a-day#readme",
+  "devDependencies": {
+    "express": "^4.17.3"
+  }
+}
