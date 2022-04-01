@@ -13,3 +13,5 @@ ee.emit('eat', '屎')
 ee.emit('eat', '屎')
 
 ee.emit('exam' , 0)
+ee.emit('exam' , 0)
+ee.emit('exam' , 0)
