@@ -1,76 +1,174 @@
-// 定义三种状态的常量
-const PENDING = 'pending'
-const FULFILLEd = 'fulfilled'
-const REJECTED = 'rejected'
-
 class MyPromise {
   constructor(executor) {
+    // 状态和值的初始化
+    this.status = 'pending'
+    this.value = null
+    this.reason = null
+
+    // 存放onFulfilled和onRejected函数调用的数组
+    this.onFulfilledCallbacks = []
+    this.onRejectedCallbacks = []
+
+    // resolve reject
+    let resolve = (value) => {
+      if (this.status === 'pending') {
+        this.status = 'fulfilled'
+        this.value = value
+        // 状态确定，调用数组里的回调函数
+        this.onFulfilledCallbacks.forEach((fn) => fn())
+      }
+    }
+
+    let reject = (reason) => {
+      if (this.status === 'pending') {
+        this.status = 'rejected'
+        this.reason = reason
+        // 状态确定，调用数组里的回调函数
+        this.onRejectedCallbacks.forEach((fn) => fn())
+      }
+    }
+
+    // 立即执行
     try {
-      executor(this.resolve, this.reject)
-    } catch (e) {
-      this.reject(e)
-    }
-  }
-
-  status = PENDING
-
-  value = null
-  reseason = null
-
-  onFulfilledCallbacks = []
-  onRejectedCallbacks = []
-
-  // 普通函数直接调用，this会指向window或undefined
-  // 使用箭头函数可以让this指向当前实例
-  resolve = (value) => {
-    if (this.status === PENDING) {
-      this.status = FULFILLEd
-      this.value = value
-      while (this.onFulfilledCallbacks.length) {
-        this.onFulfilledCallbacks.shift()(value)
-      }
-    }
-  }
-
-  reject = (reason) => {
-    if (this.status === PENDING) {
-      this.status = REJECTED
-      this.reason = reason
-      while (this.onRejectedCallbacks.length) {
-        this.onRejectedCallbacks.shift()(reason)
-      }
+      executor(resolve, reject)
+    } catch (err) {
+      reject(err)
     }
   }
 
   then(onFulfilled, onRejected) {
-    // 参数校验，确保是函数
-    onFulfilled = typeof onFulfilled === 'Function' ? onFulfilled : (val) => val
+    // onFulfilled如果不是函数，就忽略onFulfilled，直接返回value
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (value) => value
+    // onRejected如果不是函数，就忽略onRejected，直接扔出错误
     onRejected =
-      typeof onRejected === 'Function'
+      typeof onRejected === 'function'
         ? onRejected
-        : (reason) => {
-            throw reason
+        : (err) => {
+            throw err
           }
-
-    var thenPromise = new Promise((resolve, reject) => {
-      // 判断状态，执行对应的函数
-      if (this.status === FULFILLEd) {
-        const res = onFulfilled(this.value)
-        if (res instanceof MyPromise) {
-          res.then(resolve, reject)
-        } else {
-          resolve(res)
+    let promise2 = new MyPromise((resolve, reject) => {
+      if (this.status === 'fulfilled') {
+        setTimeout(() => {
+          try {
+            let x = onFulfilled(this.value)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (err) {
+            reject(err)
+          }
+        }, 0)
+      } else if (this.status === 'rejected') {
+        try {
+          let x = onRejected(this.reason)
+          resolvePromise(promise2, x, resolve, reject)
+        } catch (err) {
+          reject(err)
         }
-      } else if (this.status === REJECTED) {
-        onRejected(onRejected)
-      } else if (this.status === PENDING) {
-        this.onFulfilledCallbacks.push(onFulfilled)
-        this.onRejectedCallbacks.push(onRejected)
+      } else if (this.status === 'pending') {
+        this.onFulfilledCallbacks.push(() => {
+          try {
+            let x = onFulfilled(this.value)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (err) {
+            reject(err)
+          }
+        })
+        this.onRejectedCallbacks.push(() => {
+          try {
+            let x = onRejected(this.reason)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (err) {
+            reject(err)
+          }
+        })
       }
     })
 
-    return thenPromise
+    function resolvePromise(promise2, x, resolve, reject) {
+      if (x === promise2) {
+        return reject(new TypeError('chaining cycyle detected for promise'))
+      }
+
+      if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
+        try {
+          let then = x.then
+
+          let called = false
+          if (typeof then === 'function') {
+            then.call(
+              x,
+              (val) => {
+                if (called) return
+                called = true
+                resolvePromise(promise2, val, resolve, reject)
+              },
+              (err) => {
+                if (called) return
+                called = true
+                reject(err)
+              }
+            )
+          } else {
+            resolve(x)
+          }
+        } catch (err) {
+          if (called) return
+          called = true
+          reject(err)
+        }
+      } else {
+        resolve(x)
+      }
+    }
+
+    return promise2
   }
+
+  catch(fn) {
+    this.then(null, fn)
+  }
+}
+
+// resolve
+MyPromise.resolve = function (val) {
+  return new MyPromise((resolve, reject) => {
+    resolve(val)
+  })
+}
+
+// reject方法
+MyPromise.reject = function (err) {
+  return new MyPromise((resolve, reject) => {
+    reject(err)
+  })
+}
+
+// race方法
+MyPromise.race = function (promises) {
+  return new MyPromise((resolve, reject) => {
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(resolve, reject)
+    }
+  })
+}
+
+// all方法
+MyPromise.all = function (promises) {
+  let result = []
+  let count = 0
+  let processData = function (idx, data) {
+    result[idx] = data
+    count++
+    if (count === promises.length) {
+      resolve(result)
+    }
+  }
+  return new MyPromise((resolve, reject) => {
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then((data) => {
+        processData(data)
+      }, reject)
+    }
+  })
 }
 
 module.exports = {
