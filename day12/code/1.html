@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>前端路由</title>
+</head>
+
+<body>
+  <a href="#/">首页</a>
+  <a href="#/about">关于</a>
+  <a href="#/article">文章</a>
+  <div id="app"></div>
+  <button onclick="router.forward()">前进</button>
+  <button onclick="router.back()">后退</button>
+  <script>
+    // 1. 会增加历史记录
+    // 2. 通过监听window的hashchange事件，当hash变化时可以通过location.hash获得hash值
+    class hashRouter {
+      constructor(hashMap, app) {
+        this.hashMap = hashMap
+        this.render(app)
+      }
+
+      render(app) {
+        window.addEventListener('hashchange', function (e) {
+          let path = location.hash.slice(1)
+          console.log(path);
+          let component = this.hashMap.find(item => item.path === path) ? this.hashMap.find(item => item.path === path).component : '404 Not Found'
+          app.innerHTML = component
+        }.bind(this))
+      }
+
+      forward() {
+        window.history.forward()
+      }
+
+      back() {
+        window.history.back()
+      }
+
+    }
+
+    let hashMap = [
+      {
+        path: '/',
+        component: '这是首页页面的内容'
+      },
+      {
+        path: '/about',
+        component: '这是关于页面的内容'
+      },
+      {
+        path: '/article',
+        component: '这是文章页面的内容'
+      }
+    ]
+
+    let app = document.querySelector('#app')
+
+    let router = new hashRouter(hashMap, app)
+
+
+  </script>
+</body>
+
+</html>

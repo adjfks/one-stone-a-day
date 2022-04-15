@@ -1,0 +1,160 @@
+/* 页面初始化样式 */
+:root {
+  --color-bg: #f3f5f7;
+  --color-font-main: #252a34;
+  --color-font-hover: #fabea7;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: var(--color-font-main);
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+body{
+  font: 12px/1.5 "Helvetica Neue", "Helvetica", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Arial", "sans-serif";
+  background-color: var(--color-bg);
+  color: var(--color-font-main);
+  background-image: url('./images/bg1.gif');
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.w {
+  max-width: 1290px;
+  margin: 0 auto;
+}
+
+/* -------头部header区域------- */
+#header {
+  position: relative;
+  height: 60px;
+  line-height: 60px;
+  background-color: rgba(255,255,255 , 0.9);
+  box-shadow: 0 0 8px 0 rgba(232,237,250,.6),0 2px 4px 0 rgba(232,237,250,.5);
+}
+
+/* 左侧logo区域 */
+#header .logo {
+    font-weight: 500;
+    font-style: italic;
+}
+
+.logo a {
+  letter-spacing: 1em;
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* 右侧导航区域 */
+.top {
+  display: flex;
+}
+
+#header .nav {
+  height: 60px;
+  display: flex;
+}
+
+#header .nav li {
+  height: 60px;
+  line-height: 60px;
+  font-size: 16px;
+}
+
+#header .nav li a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 10px;
+  -webkit-background-clip: text;
+  transition: color 0.25s ease;
+}
+
+.nav li a:hover{
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  color: #4facfe;
+}
+
+.nav li a::after{
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  transition: all .3s ease;
+}
+
+.nav li a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+#header .nav li a .nav-text {
+  margin-left: 5px;
+}
+
+/* 右侧导航区域 */
+#header .search {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+#header .search .search-box{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  width: 250px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 16px;
+  box-shadow: 0 10px 40px -10px rgba(0,64,128,.2);
+}
+
+.search-box .search-input {
+  outline: none;
+  border: none;
+}
+
+.search-box .search-icon {
+  
+}
+
+/* -----------主体内容区域--------- */
+#main {
+  display: flex;
+  margin-top: 1.5rem;
+}
+
+/* 左侧文章区域 */
+#main .article {
+  flex: 1;
+}
+
+.article .article-list {
+}
+
+#main .sidebar {
+  width: 300px;
+}
+

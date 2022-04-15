@@ -1,0 +1,57 @@
+/* 清除浮动 */
+.clearfix::after {
+  content: '';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.clearfix {
+  *zoom: 1
+}
+
+/* 版心 */
+.wrapper {
+  max-width: 1290px;
+  margin: 0 auto;
+}
+
+/* 媒体查询改变版心宽度 */
+@media screen and (max-width: 1200px) {
+  .wrapper {
+    max-width: 970px;
+  }
+}
+@media screen and (max-width: 992px) {
+  .wrapper {
+    max-width: 768px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .wrapper {
+    max-width: 640px;
+  }
+}
+
+/* 隐藏显示类 */
+.none {
+  display: none !important;
+}
+
+.block {
+  display: block !important;
+}
+
+/* 渐变色字体 */
+.gradient {
+  -webkit-background-clip: text;
+  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  color: transparent;
+}
+
+/* 颜色变量 */
+:root {
+  --base-font-color: #24292e;
+  --gray-color: 	#e8edfa;
+}

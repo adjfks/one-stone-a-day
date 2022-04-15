@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>history路由</title>
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <a href="javascript:;" class="nav-item">首页</a>
+  <a href="javascript:;" class="nav-item">关于</a>
+  <a href="javascript:;" class="nav-item">文章</a>
+  <button onclick="router.forward()">前进</button>
+  <button onclick="router.back()">后退</button>
+  <div id="app"></div>
+
+  <script>
+    let routerMap = [
+      {
+        path: '/',
+        name: '首页',
+        component: '这是首页的内容'
+      },
+      {
+        path: '/about',
+        name: '关于',
+        component: '这是关于的内容'
+      },
+      {
+        path: '/article',
+        name: '文章',
+        component: '这是文章的内容'
+      }
+    ]
+
+    let history = window.history
+    let app = document.querySelector('#app')
+
+    window.onpopstate = function (e) {
+      console.log(e);
+    }
+
+    let navItems = document.querySelectorAll('.nav-item')
+    Array.from(navItems).forEach(item => {
+      item.addEventListener('click', function (e) {
+        let cur = routerMap.find(item => item.name === e.target.innerHTML)
+        let path = cur.path
+        let component = cur.component
+        history.pushState({ path: path }, null, path)
+        app.innerHTML = component
+      })
+    })
+  </script>
+</body>
+
+</html>
